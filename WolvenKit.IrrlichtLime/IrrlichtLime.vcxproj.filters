@@ -646,6 +646,9 @@
     <ClInclude Include="MeshCombiner.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="CameraWolvenKitSceneNodeAnimator.h" />
+    <ClInclude Include="SceneManagerWolvenKit.h" />
+    <ClInclude Include="TerrainSceneNodeWolvenKit.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GPUProgrammingServices.cpp">
@@ -969,5 +972,8 @@
     <ClCompile Include="MeshCombiner.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="CameraWolvenKitSceneNodeAnimator.cpp" />
+    <ClCompile Include="SceneManagerWolvenKit.cpp" />
+    <ClCompile Include="TerrainSceneNodeWolvenKit.cpp" />
   </ItemGroup>
 </Project>
