@@ -1,3 +1,8 @@
+CHANGELOG 0.7.0.1 - 2021.04.30
+ - Update Visual Studio Platform configuration
+ - Add support for Float values to BulkEditor
+
+---------------------------------- LEGACY CHANGELOG ----------------------------------
 CHANGELOG 0.6.0.1 - 2020.05.06
  - COMPLETE GAME FILE READING SUPPORT
  - All the unknownbytes have been figured out apart from some minor ones
@@ -24,9 +29,10 @@ CHANGELOG 0.3.1.0 - 2018.08.02.
  - Implemented splash screen & Some Particle classes
  - Create ChangeLog.txt
  - Added proper wcc_lite patcher
----------------------------------- LEGACY CHANGELOG ----------------------------------
+
+
 CHANGELOG 0.3.0.1 - 2018.07.26. 
- -  Fix broken wcc_lite license formating
+ - Fix broken wcc_lite license formating
  - Notes and kind of implementation of CIndexed2dArray. This needs to be discussed or whatever what even this file is.
  - Add missing file
  - Implement Grassmask reading
