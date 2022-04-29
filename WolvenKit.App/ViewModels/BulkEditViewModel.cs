@@ -26,6 +26,7 @@ namespace WolvenKit.App.ViewModels
         public enum AvailableTypes
         { 
             ANY, 
+            CFloat,
             CUInt64, 
             CUInt32, 
             CUInt16, 
@@ -330,8 +331,8 @@ namespace WolvenKit.App.ViewModels
             {
                 var propname = splits.Last();
 
-                var propnameslist = cvar.accessor.GetMembers().Select(_ => _.Name).ToList();
-                if (propnameslist.Contains(propname))
+                var propnameslist = cvar.accessor.GetMembers().Select(_ => _.Name.ToLower()).ToList();
+                if (propnameslist != null && propnameslist.Contains(propname.ToLower()))
                 {
                     try
                     {
