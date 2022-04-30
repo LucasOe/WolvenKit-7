@@ -25,17 +25,17 @@ namespace WolvenKit.App.ViewModels
     {
         public enum AvailableTypes
         { 
-            ANY, 
+            ANY,
             CFloat,
-            CUInt64, 
-            CUInt32, 
-            CUInt16, 
+            CUInt64,
+            CUInt32,
+            CUInt16,
             CUInt8,
-            CInt64, 
-            CInt32, 
-            CInt16, 
+            CInt64,
+            CInt32,
+            CInt16,
             CInt8,
-            CBool, 
+            CBool,
             CString
         }
 
@@ -86,6 +86,11 @@ namespace WolvenKit.App.ViewModels
         [Description("Include only the following values.\n\r" +
             "Example: 0,32,64")]
         public string Include { get; set; }
+
+        // Array index
+        [Description("The index if the variable is an array.\n\r" +
+            "Example: 0,64,1028,2053")]
+        public int Index { get; set; }
     }
 
     public class ProgressReport : ObservableObject
@@ -338,10 +343,12 @@ namespace WolvenKit.App.ViewModels
                     {
                         // check if type is supported
                         var proptoedit = cvar.GetEditableVariables().First(_ => _.REDName == propname) as CVariable;
-                        if (Enum.GetValues(typeof(BulkEditOptions.AvailableTypes))
+                        var typeName = proptoedit.GetType().Name;
+                        if (typeName == "CArray`1" ||
+                            Enum.GetValues(typeof(BulkEditOptions.AvailableTypes))
                                 .Cast<BulkEditOptions.AvailableTypes>()
                                 .Select(_ => _.ToString())
-                                .Contains(proptoedit.GetType().Name))
+                                .Contains(typeName))
                         {
                             // check if the user specified a file type
                             if (opts.Type != BulkEditOptions.AvailableTypes.ANY)
@@ -363,6 +370,18 @@ namespace WolvenKit.App.ViewModels
 
                             // check the value 
                             dynamic dyn = proptoedit;
+
+                            // if dyn is an array get element at Index
+                            try
+                            {
+                                if (dyn.Elements is IList list)
+                                    dyn = dyn.Elements[opts.Index];
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+
+                            // single values
                             if (!(dyn.val is string x))
                                 x = dyn.val.ToString();
 
@@ -372,7 +391,11 @@ namespace WolvenKit.App.ViewModels
                                 return;
 
                             // access the val property of the CVariable because there's typeconverters from string available
-                            Member member = proptoedit.accessor.GetMembers().First(_ => _.Name == "val");
+                            Member member = proptoedit.accessor.GetMembers().First(_ => _.Name == "val" || _.Name == "Elements");
+
+                            if (member.Name == "Elements")
+                                return;
+
                             var converter = TypeDescriptor.GetConverter(member.Type);
                             var convertedRequestedValue = converter.ConvertFrom(opts.Value);      // convert the requested balue to the type of the cvariable
 
