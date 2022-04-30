@@ -75,7 +75,7 @@
       </SubSystem>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
-      <AdditionalLibraryDirectories>..\Libs\debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Libs</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
