@@ -375,7 +375,9 @@ namespace WolvenKit.App.ViewModels
                             try
                             {
                                 if (dyn.Elements is IList list)
+                                {
                                     dyn = dyn.Elements[opts.Index];
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -393,22 +395,12 @@ namespace WolvenKit.App.ViewModels
                             // access the val property of the CVariable because there's typeconverters from string available
                             Member member = proptoedit.accessor.GetMembers().First(_ => _.Name == "val" || _.Name == "Elements");
 
-                            if (member.Name == "Elements")
-                                return;
-
-                            var converter = TypeDescriptor.GetConverter(member.Type);
-                            var convertedRequestedValue = converter.ConvertFrom(opts.Value);      // convert the requested balue to the type of the cvariable
+                            var converterToType = TypeDescriptor.GetConverter(member.Type);
+                            var convertedRequestedValue = converterToType.ConvertFrom(opts.Value);      // convert the requested value to the type of the cvariable
 
                             // if a replace operation is requested
                             if (opts.Operation == BulkEditOptions.AvailableOperations.Replace)
                             {
-                                // value is already set to the desired value
-                                if (x == opts.Value)
-                                    return;
-
-
-                                
-
                                 // set via reflection
                                 proptoedit.accessor[proptoedit, "val"] = convertedRequestedValue;
                                 Logger.LogString($"Succesfully edited a variable in {cvar.REDName}: {x} ===> {convertedRequestedValue}.\r\n", Logtype.Normal);
