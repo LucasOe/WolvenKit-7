@@ -86,11 +86,6 @@ namespace WolvenKit.App.ViewModels
         [Description("Include only the following values.\n\r" +
             "Example: 0,32,64")]
         public string Include { get; set; }
-
-        // Array index
-        [Description("The index if the variable is an array.\n\r" +
-            "Example: 0,64,1028,2053")]
-        public int Index { get; set; }
     }
 
     public class ProgressReport : ObservableObject
@@ -368,6 +363,14 @@ namespace WolvenKit.App.ViewModels
                                 }
                             }
 
+                            /*
+                            if (excludedvalues.Count != 0 && excludedvalues.Contains(x))
+                                return;
+                            if (includedvalues.Count != 0 && !includedvalues.Contains(x))
+                                return;
+                            */
+
+
                             // check the value 
                             dynamic dyn = proptoedit;
 
@@ -375,35 +378,34 @@ namespace WolvenKit.App.ViewModels
                             try
                             {
                                 if (dyn.Elements is IList list)
-                                {
-                                    dyn = dyn.Elements[opts.Index];
-                                }
+                                    proptoedit = dyn.Elements[0]; // Replace with Index
                             }
                             catch (Exception ex)
                             {
                             }
 
-                            // single values
-                            if (!(dyn.val is string x))
-                                x = dyn.val.ToString();
-
-                            if (excludedvalues.Count != 0 && excludedvalues.Contains(x))
-                                return;
-                            if (includedvalues.Count != 0 && !includedvalues.Contains(x))
-                                return;
-
-                            // access the val property of the CVariable because there's typeconverters from string available
-                            Member member = proptoedit.accessor.GetMembers().First(_ => _.Name == "val" || _.Name == "Elements");
-
+                            Member member = proptoedit.accessor.GetMembers().First(_ => _.Name == "val" || _.Name == "Elements"); // Remove Elements?
                             var converterToType = TypeDescriptor.GetConverter(member.Type);
-                            var convertedRequestedValue = converterToType.ConvertFrom(opts.Value);      // convert the requested value to the type of the cvariable
+                            var convertedRequestedValue = converterToType.ConvertFrom(opts.Value);
 
+                            if (member.Name == "Elements")
+                            {
+                                List<object> list = new List<object>();
+                                list.Add(convertedRequestedValue);
+                                proptoedit.accessor[proptoedit, "Elements"] = list;
+                            }
+                            else
+                            {
+                                proptoedit.accessor[proptoedit, "val"] = convertedRequestedValue;
+                            }
+
+                            /*
                             // if a replace operation is requested
                             if (opts.Operation == BulkEditOptions.AvailableOperations.Replace)
                             {
                                 // set via reflection
                                 proptoedit.accessor[proptoedit, "val"] = convertedRequestedValue;
-                                Logger.LogString($"Succesfully edited a variable in {cvar.REDName}: {x} ===> {convertedRequestedValue}.\r\n", Logtype.Normal);
+                                Logger.LogString($"Succesfully edited a variable in {cvar.REDName}: ===> {convertedRequestedValue}.\r\n", Logtype.Normal);
                             }
                             // if a multiply etc operation is requested
                             else
@@ -443,7 +445,7 @@ namespace WolvenKit.App.ViewModels
                                     }
                                 }
                             }
-                            
+                            */
 
                             
                         }
